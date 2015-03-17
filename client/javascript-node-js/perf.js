@@ -3,9 +3,10 @@
 */
 
 var dgram   = require('dgram'),
+    memwatch = require('memwatch'),
     Noobhub = require('./client.js').Nbhb,
     config  = {
-        zerlings: 1000,
+        zerlings: 200,
         numberOfChannels: 20,
         statsd: {
             port: 8125,
@@ -13,6 +14,10 @@ var dgram   = require('dgram'),
             prefix: 'noobhub.testload.'
         }
     };
+
+    memwatch.on('leak', function(info) { console.log('LEAK DETECTED!!!!', info); });
+
+    memwatch.on('stats', function(stats) { console.log(stats); });
 
 var _sendMetrics = function(msg) {
     var cfg = config.statsd;
@@ -39,7 +44,7 @@ var _onError = function(idx ,err) {
 }
 
 var z = function(idx) {
-    var talkInterval = Math.round(Math.random()*10) + 1 // say smthng randomly once per 0 ..10 seconds
+    var talkInterval = Math.round(Math.random()*10) + 20 // say smthng randomly once per 0 ..10 seconds
         , channel = idx % config.numberOfChannels
         , n = new Noobhub()
         , startTime = null

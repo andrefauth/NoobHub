@@ -16,6 +16,7 @@
  **/
 
 var server = require('net').createServer()
+    , memwatch = require('memwatch')
     , sockets = {}  // this is where we store all current client socket connections
     , cfg = {
         port: 1337,
@@ -25,6 +26,10 @@ var server = require('net').createServer()
     , _log = function(){
         if (cfg.verbose) console.log.apply(console, arguments);
     };
+
+memwatch.on('leak', function(info) { console.log('LEAK DETECTED!!!!', info); });
+
+memwatch.on('stats', function(stats) { console.log(stats); });
 
 // black magic
 process.on('uncaughtException', function(err){

@@ -1,0 +1,8 @@
+{
+  "name" : "Noobhub",
+  "version" : "0.2.0",
+  "description" : "Simple Pub-sub for Nodejs",
+  "devDependencies" : {
+    "memwatch" : "*"
+  }
+}
