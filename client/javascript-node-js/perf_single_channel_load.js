@@ -3,13 +3,13 @@
 */
 
 var dgram   = require('dgram'),
-    Noobhub = require('./client.js').Nbhb,
+    Noobhub = require('./client.js'),
     config  = {
         zerglings: 1024,
         channel: 'gsom',
         statsd: {
             port: 8125,
-            host: '46.4.76.236',
+            host: '127.0.0.1',
             prefix: 'noobhub.testload.'
         }
     };
@@ -51,31 +51,34 @@ setTimeout(function(){
 var z = function(idx) {
     var talkInterval = 1 //Math.round(Math.random()*10) + 1 // say smthng randomly once per 0 ..10 seconds
         , channel = config.channel //idx % config.numberOfChannels
-        , n = new Noobhub()
+        , n = Noobhub.createClient({
+          port: 1337,
+          host: 'localhost',
+          onError: function(err) {
+            isAlive = 0;
+            clearInterval(_interval);
+            clearInterval(_changeChannel);
+            return _onError(idx, err);
+          }
+        })
         , startTime = null
         , _myMessage = null
         , isAlive = 0
         , _interval = null
         , _changeChannel = null
         , _subscribe = function() {
-            n.subscribe({
-                port: 1337,
-                server: 'localhost',
-                channel: channel
-            }, function() { isAlive = 1; return _onSubscribed(idx); }
-            , function(msg) { 
+            n.subscribe(channel
+              , function() { 
+                isAlive = 1; 
+                return _onSubscribed(idx); 
+              }
+              , function(msg) { 
                 if (msg === _myMessage) {
                     var lat = Date.now() - startTime;
                     console.log(idx + 'latency is : ',  lat);
                     //_sendMetrics('latency:'+lat+'|ms');
                 }
-                return _onMessage(idx, msg); 
-            }
-            , function(err) { 
-                isAlive = 0; 
-                clearInterval(_interval); 
-                clearInterval(_changeChannel); 
-                return _onError(idx, err);
+                return _onMessage(idx, msg);
             }
             );
         }
@@ -89,7 +92,7 @@ var z = function(idx) {
             } else {
                 clearInterval(_interval);
                 clearInterval(_changeChannel);
-                n.unsubscribe();
+                n.disconnect();
                 n = null;
             }
         };
