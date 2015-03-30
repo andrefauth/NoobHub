@@ -74,7 +74,7 @@ server.on('connection', function(socket) {
             socket.buffer.len = socket.buffer.write(str, 0);
             var subscribers = Object.keys(sockets[socket.channel]);
             for (var i=0, l=subscribers.length; i<l; i++) {
-                sockets[socket.channel][ subscribers[i] ].isConnected && sockets[socket.channel][ subscribers[i] ].write("__JSON__END__" + json + "__JSON__END__");
+                sockets[socket.channel][ subscribers[i] ].isConnected && sockets[socket.channel][ subscribers[i] ].write("__JSON__START__" + json + "__JSON__END__");
             } // writing this message to all sockets with the same channel
         }
 
