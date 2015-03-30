@@ -11,7 +11,7 @@
     "should": "3.0.0",
     "sinon": "^1.14.1"
   },
-  "script": {
+  "scripts": {
     "test" : "mocha spec/client.test.js"
   }
 }

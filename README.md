@@ -1,7 +1,7 @@
 NoobHub
 =======
 
-OpenSource multiplayer and network messaging for CoronaSDK, Moai, Gideros & LÖVE
+OpenSource multiplayer and network messaging for CoronaSDK, Moai, Gideros, LÖVE and NodeJs
 
 Battle-tested and production ready. Handling thousands of CCU (concurrent users), serving hundreds of thousands multiplayer games daily, routing hundreds of messages per second.
 
@@ -10,7 +10,7 @@ Battle-tested and production ready. Handling thousands of CCU (concurrent users)
 * Server written on blazing fast Nodejs.
 * Socket connections, works great through any NAT (local area network), messages delivery is reliable and fast.
 
-Repo includes server code (so you can use your own server) and CoronaSDK/Moai/Gideros client. More clients to come.
+Repo includes server code (so you can use your own server) and CoronaSDK/Moai/Gideros/NodeJs client. More clients to come.
 You can test on my server, credentials are hardcoded in demo project!
 
 Lua code may serve as an example of how LuaSocket library works.
@@ -52,6 +52,36 @@ SAY SOMETHING TO EVERYBODY ON THE CHANNEL
         });
 ```
 
+* As node-js module
+```javascript
+        var nbhb = require('./client/javascript-node-js/client.js')
+         , client = nbhb.createClient({
+           host: 'localhost',
+           port: 1337,
+           onError: function(err) {
+             console.error(err)
+           }
+         })
+         // connect and subscribe
+         client.subscribe( 'chatroom',
+           function onSubscribe() {
+             console.log('Subscribed to chatroom channel\r\n');
+           },
+           function onMessage( msg ) {
+             console.log('got message: %s', msg);
+           }
+         )
+         // publish
+         client.publish( msg, function onPublish() {
+           console.log('Message published\r\n')
+         })
+```
+
+Run tests:
+```bash
+        $ cd client/javascript-node-js && npm i && npm test
+```
+
 
 Clients
 ------
@@ -59,7 +89,7 @@ Clients
 * Gideros
 * Moai
 * LÖVE
-* Node.js (buggy)
+* Node.js
 * PHP (debug console only)
 
 Getting ready for production use
