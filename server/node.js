@@ -66,22 +66,17 @@ server.on('connection', function(socket) {
             sockets[socket.channel][ socket.connection_id ] = socket;
         }
 
-        // 
-        ////var time_to_exit = true;
-            ////do{  // this is for a case when several messages arrived in buffer
-            while ( (start = str.indexOf("__JSON__START__")) !=  -1   &&  (end = str.indexOf("__JSON__END__"))  !=  -1 ) {
-                var json = str.substr( start+15,  end-(start+15) );
-                _log("Client posts json:  " + json);
-                str = str.substr(end + 13);  // cut the message and remove the precedant part of the buffer since it can't be processed
-                socket.buffer.len = socket.buffer.write(str, 0);
-                var subscribers = Object.keys(sockets[socket.channel]);
-                for (var i=0, l=subscribers.length; i<l; i++) {
-                    sockets[socket.channel][ subscribers[i] ].isConnected && sockets[socket.channel][ subscribers[i] ].write("__JSON__END__" + json + "__JSON__END__");
-                } // writing this message to all sockets with the same channel
-                ////time_to_exit = false;
-            }//// else {  time_to_exit = true; } // if no json data found in buffer - then it is time to exit this loop
-            ////} while ( !time_to_exit );
-
+        // this is for a case when several messages arrived in buffer
+        while ( (start = str.indexOf("__JSON__START__")) !=  -1   &&  (end = str.indexOf("__JSON__END__"))  !=  -1 ) {
+            var json = str.substr( start+15,  end-(start+15) );
+            _log("Client posts json:  " + json);
+            str = str.substr(end + 13);  // cut the message and remove the precedant part of the buffer since it can't be processed
+            socket.buffer.len = socket.buffer.write(str, 0);
+            var subscribers = Object.keys(sockets[socket.channel]);
+            for (var i=0, l=subscribers.length; i<l; i++) {
+                sockets[socket.channel][ subscribers[i] ].isConnected && sockets[socket.channel][ subscribers[i] ].write("__JSON__END__" + json + "__JSON__END__");
+            } // writing this message to all sockets with the same channel
+        }
 
     }); // end of  socket.on 'data'
 
